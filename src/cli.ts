@@ -146,4 +146,80 @@ program
         }
     });
 
+program
+    .command('install-hook')
+    .description('Install Git hook for automatic changelog generation')
+    .option('--cwd <path>', 'Working directory (defaults to current directory)', process.cwd())
+    .action(async (options) => {
+        try {
+            const { installHook, isGitRepository } = await import('./hook-utils');
+
+            if (!await isGitRepository(options.cwd)) {
+                console.error(chalk.red('❌ Error: Not a git repository'));
+                process.exit(1);
+            }
+
+            await installHook(options.cwd);
+
+            const config = await loadConfig();
+            console.log(chalk.cyan(`\nℹ️  Commit with prefix "${config.hookPrefix}" to trigger automatic changelog generation.`));
+            console.log(chalk.cyan(`   Example: git commit -m "${config.hookPrefix} Add new user endpoint"`));
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error:'), error);
+            process.exit(1);
+        }
+    });
+
+program
+    .command('uninstall-hook')
+    .description('Uninstall Git hook')
+    .option('--cwd <path>', 'Working directory (defaults to current directory)', process.cwd())
+    .action(async (options) => {
+        try {
+            const { uninstallHook, isGitRepository } = await import('./hook-utils');
+
+            if (!await isGitRepository(options.cwd)) {
+                console.error(chalk.red('❌ Error: Not a git repository'));
+                process.exit(1);
+            }
+
+            await uninstallHook(options.cwd);
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error:'), error);
+            process.exit(1);
+        }
+    });
+
+program
+    .command('hook-status')
+    .description('Check if Git hook is installed')
+    .option('--cwd <path>', 'Working directory (defaults to current directory)', process.cwd())
+    .action(async (options) => {
+        try {
+            const { isHookInstalled, isGitRepository } = await import('./hook-utils');
+
+            if (!await isGitRepository(options.cwd)) {
+                console.error(chalk.red('❌ Error: Not a git repository'));
+                process.exit(1);
+            }
+
+            const installed = await isHookInstalled(options.cwd);
+
+            if (installed) {
+                console.log(chalk.green('✅ Git hook is installed'));
+                const config = await loadConfig();
+                console.log(chalk.cyan(`   Prefix: "${config.hookPrefix}"`));
+            } else {
+                console.log(chalk.yellow('⚠️  Git hook is not installed'));
+                console.log(chalk.cyan('   Run: npx api-diff-logger install-hook'));
+            }
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error:'), error);
+            process.exit(1);
+        }
+    });
+
 program.parse();

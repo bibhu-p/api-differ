@@ -38,6 +38,10 @@ export interface Config {
     excludePatterns?: string[];
     /** Output file path for changelog */
     outputPath?: string;
+    /** Git hook commit prefix (e.g., '[api]') */
+    hookPrefix?: string;
+    /** Append changelog summary to commit message */
+    appendToCommitMessage?: boolean;
 }
 
 /**
@@ -63,6 +67,8 @@ export const DEFAULT_CONFIG: Required<Config> = {
     includePatterns: NESTJS_PRESET.includePatterns,
     excludePatterns: NESTJS_PRESET.excludePatterns,
     outputPath: 'API_CHANGELOG.md',
+    hookPrefix: '[api]',
+    appendToCommitMessage: true,
 };
 
 /**
@@ -84,6 +90,8 @@ export const loadConfig = async (): Promise<Required<Config>> => {
                 includePatterns: userConfig.includePatterns || DEFAULT_CONFIG.includePatterns,
                 excludePatterns: userConfig.excludePatterns || DEFAULT_CONFIG.excludePatterns,
                 outputPath: userConfig.outputPath || DEFAULT_CONFIG.outputPath,
+                hookPrefix: userConfig.hookPrefix || DEFAULT_CONFIG.hookPrefix,
+                appendToCommitMessage: userConfig.appendToCommitMessage ?? DEFAULT_CONFIG.appendToCommitMessage,
             };
         }
     } catch (error) {
