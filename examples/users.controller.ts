@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Patch, Param, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Param, Body, Query } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -22,11 +22,15 @@ export class UsersController {
         return {};
     }
 
-    // Removed Delete endpoint
-
     @Patch(':id/status')
     updateStatus(@Param('id') id: string, @Body('status') status: string) {
         return {};
+    }
+
+    // New endpoint
+    @Get('search')
+    search(@Query('q') query: string) {
+        return [];
     }
 }
 
@@ -44,6 +48,11 @@ export class ProductsController {
 
     @Post()
     create(@Body() createProductDto: any) {
+        return {};
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
         return {};
     }
 }
