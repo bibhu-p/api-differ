@@ -46,6 +46,54 @@ npx api-diff-logger generate --from abc123 --to def456
 npx api-diff-logger generate --from abc123 --output ./docs/CHANGELOG.md
 ```
 
+## Git Hook Integration
+
+Automatically generate changelogs when committing with a specific prefix.
+
+### Installation
+
+```bash
+npx api-diff-logger install-hook
+```
+
+### Usage
+
+Once installed, commit with the `[api]` prefix to trigger automatic changelog generation:
+
+```bash
+git commit -m "[api] Add new user endpoint"
+```
+
+The hook will:
+1. Detect the `[api]` prefix in your commit message
+2. Generate/update the changelog automatically
+3. Stage the changelog file
+4. Append a summary to your commit message (optional)
+
+### Hook Commands
+
+```bash
+# Install the Git hook
+npx api-diff-logger install-hook
+
+# Check hook status
+npx api-diff-logger hook-status
+
+# Uninstall the hook
+npx api-diff-logger uninstall-hook
+```
+
+### Customizing the Prefix
+
+Change the commit prefix in your configuration file:
+
+```json
+{
+  "hookPrefix": "api:",
+  "appendToCommitMessage": true
+}
+```
+
 ## Configuration
 
 Create a configuration file in your project root:
