@@ -1,0 +1,13 @@
+{
+    "framework": "nestjs",
+    "outputPath": "API_CHANGELOG.md",
+    "includePatterns": [
+        "**/*.controller.ts"
+    ],
+    "excludePatterns": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ]
+}
