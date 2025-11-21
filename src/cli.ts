@@ -17,6 +17,20 @@ program
     .version('0.1.0');
 
 program
+    .command('init')
+    .description('Interactive setup wizard to configure the package')
+    .option('--cwd <path>', 'Working directory (defaults to current directory)', process.cwd())
+    .action(async (options) => {
+        try {
+            const { setupWizard } = await import('./setup');
+            await setupWizard(options.cwd);
+        } catch (error) {
+            console.error(chalk.red('❌ Error:'), error);
+            process.exit(1);
+        }
+    });
+
+program
     .command('generate')
     .description('Generate changelog between commits')
     .option('-f, --from <commit>', 'Start commit SHA')
