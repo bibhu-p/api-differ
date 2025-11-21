@@ -29,7 +29,7 @@ export interface FrameworkPreset {
  */
 export interface Config {
     /** Framework preset or custom configuration */
-    framework?: 'nestjs' | 'custom';
+    framework?: 'nestjs' | 'express' | 'fastify' | 'custom';
     /** Custom decorator configuration (overrides preset) */
     decorators?: DecoratorConfig;
     /** File patterns to include */
@@ -59,6 +59,50 @@ export const NESTJS_PRESET: FrameworkPreset = {
 };
 
 /**
+ * Express.js preset configuration
+ */
+export const EXPRESS_PRESET: FrameworkPreset = {
+    name: 'express',
+    decorators: {
+        controllerDecorator: '', // Express doesn't use decorators
+        methodDecorators: [],
+        paramDecorators: [],
+    },
+    includePatterns: ['**/*.routes.js', '**/*.routes.ts', '**/routes/**/*.js', '**/routes/**/*.ts', '**/api/**/*.js', '**/api/**/*.ts'],
+    excludePatterns: ['**/node_modules/**', '**/dist/**', '**/*.spec.js', '**/*.test.js', '**/*.spec.ts', '**/*.test.ts'],
+};
+
+/**
+ * Fastify preset configuration
+ */
+export const FASTIFY_PRESET: FrameworkPreset = {
+    name: 'fastify',
+    decorators: {
+        controllerDecorator: '', // Fastify doesn't use decorators
+        methodDecorators: [],
+        paramDecorators: [],
+    },
+    includePatterns: ['**/*.routes.js', '**/*.routes.ts', '**/routes/**/*.js', '**/routes/**/*.ts'],
+    excludePatterns: ['**/node_modules/**', '**/dist/**', '**/*.spec.js', '**/*.test.js', '**/*.spec.ts', '**/*.test.ts'],
+};
+
+/**
+ * Get preset by framework name
+ */
+export const getPreset = (framework: string): FrameworkPreset | null => {
+    switch (framework) {
+        case 'nestjs':
+            return NESTJS_PRESET;
+        case 'express':
+            return EXPRESS_PRESET;
+        case 'fastify':
+            return FASTIFY_PRESET;
+        default:
+            return null;
+    }
+};
+
+/**
  * Default configuration
  */
 export const DEFAULT_CONFIG: Required<Config> = {
@@ -75,7 +119,19 @@ export const DEFAULT_CONFIG: Required<Config> = {
  * Load configuration from file or use defaults
  */
 export const loadConfig = async (): Promise<Required<Config>> => {
-    const explorer = cosmiconfig('api-diff-logger');
+    const explorer = cosmiconfig('api-diff-logger', {
+        searchPlaces: [
+            'api-diff.config.json',
+            'api-diff.config.js',
+            '.api-diff-loggerrc',
+            '.api-diff-loggerrc.json',
+            '.api-diff-loggerrc.yaml',
+            '.api-diff-loggerrc.yml',
+            '.api-diff-loggerrc.js',
+            'api-diff-logger.config.js',
+            'package.json',
+        ],
+    });
 
     try {
         const result = await explorer.search();
