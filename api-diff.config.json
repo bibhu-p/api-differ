@@ -1,0 +1,22 @@
+{
+    "framework": "express",
+    "includePatterns": [
+        "**/*.routes.js",
+        "**/*.routes.ts",
+        "**/routes/**/*.js",
+        "**/routes/**/*.ts",
+        "**/api/**/*.js",
+        "**/api/**/*.ts"
+    ],
+    "excludePatterns": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/*.spec.js",
+        "**/*.test.js",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ],
+    "outputPath": "API_CHANGELOG.md",
+    "hookPrefix": "[api]",
+    "appendToCommitMessage": true
+}
