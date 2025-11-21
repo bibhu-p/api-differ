@@ -5,15 +5,50 @@ An npm package that detects REST API controller changes between Git commits and 
 ## Features
 
 - 🔍 **Automatic Detection**: Scans changed files between commits
-- 🎯 **Framework Support**: Primary support for NestJS with configurable presets
+- 🎯 **Multi-Framework Support**: NestJS, Express.js, Fastify, and custom configurations
+- 🤖 **Auto-Detection**: Automatically detects your framework from package.json
 - 📝 **Markdown Changelog**: Generates clean, readable changelogs
 - ⚙️ **Configurable**: Customize decorators and file patterns
 - 🚀 **CLI Tool**: Easy to use command-line interface
 
-## Installation
+## Quick Start
+
+### 1. Install
 
 ```bash
 npm install --save-dev api-diff-logger
+```
+
+### 2. Initialize Configuration
+
+Run the interactive setup wizard:
+
+```bash
+npx api-diff-logger init
+```
+
+This will:
+- Auto-detect your framework (NestJS, Express.js, Fastify)
+- Configure file patterns
+- Set up Git hook preferences
+- Create `api-diff.config.json`
+
+### 3. Install Git Hook (Optional)
+
+```bash
+npx api-diff-logger install-hook
+```
+
+### 4. Start Using
+
+**Manual generation:**
+```bash
+npx api-diff-logger generate --from <commit-sha>
+```
+
+**Automatic (with hook):**
+```bash
+git commit -m "[api] Add new user endpoint"
 ```
 
 ## Usage
@@ -98,7 +133,7 @@ Change the commit prefix in your configuration file:
 
 Create a configuration file in your project root:
 
-### `.api-diff-loggerrc.json`
+### `api-diff.config.json`
 
 ```json
 {
@@ -126,10 +161,59 @@ For frameworks other than NestJS, you can define custom decorators:
 }
 ```
 
+## Framework-Specific Configuration
+
+### NestJS
+
+```json
+{
+  "framework": "nestjs",
+  "includePatterns": ["**/*.controller.ts"],
+  "excludePatterns": ["**/node_modules/**", "**/dist/**", "**/*.spec.ts"]
+}
+```
+
+### Express.js
+
+```json
+{
+  "framework": "express",
+  "includePatterns": [
+    "**/*.routes.js",
+    "**/*.routes.ts",
+    "**/routes/**/*.js",
+    "**/api/**/*.js"
+  ],
+  "excludePatterns": ["**/node_modules/**", "**/dist/**", "**/*.spec.js"]
+}
+```
+
+### Fastify
+
+```json
+{
+  "framework": "fastify",
+  "includePatterns": ["**/*.routes.js", "**/*.routes.ts", "**/routes/**/*.js"],
+  "excludePatterns": ["**/node_modules/**", "**/dist/**", "**/*.spec.js"]
+}
+```
+
+### Custom Framework
+
+```json
+{
+  "framework": "custom",
+  "includePatterns": ["**/your-api-files/**/*.js"],
+  "excludePatterns": ["**/node_modules/**", "**/dist/**"]
+}
+```
+
 ## Configuration Files Supported
 
 The package uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) and supports:
 
+- `api-diff.config.json` (recommended)
+- `api-diff.config.js`
 - `.api-diff-loggerrc`
 - `.api-diff-loggerrc.json`
 - `.api-diff-loggerrc.yaml`
